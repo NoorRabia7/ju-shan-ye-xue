@@ -165,8 +165,8 @@ function updateStatsAtChapterEnd() {
 // 获取状态
 function getStatLevel(stat) {
     let range = stat.max - stat.min;
-    let lowThreshold = stat.min + range * 0.5;
-    let highThreshold = stat.max - range * 0.42;
+    let lowThreshold = stat.min + range * 0.54;
+    let highThreshold = stat.max - range * 0.43;
     if (stat.current <= lowThreshold) return "低";
     if (stat.current >= highThreshold) return "高";
     return "中";
