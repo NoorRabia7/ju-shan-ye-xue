@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雎山夜雪</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #game-container {
+            position: relative;
+            z-index: 1;
+            color: white;
+            text-shadow: 1px 1px 2px black;
+            padding: 20px;
+            text-align: center;
+            max-width: 90%;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        #chapter-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        #scene-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        #stats-display {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        #options {
+            margin: 20px 0;
+        }
+        #options button {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s; /* 平滑过渡效果 */
+        }
+        #options button:active {
+            background-color: rgba(200, 200, 200, 0.8); /* 点击时颜色变深 */
+        }
+        #next-btn {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s; /* 平滑过渡效果 */
+        }
+        #next-btn:active {
+            background-color: rgba(200, 200, 200, 0.8); /* 点击时颜色变深 */
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1 id="chapter-title"></h1>
+        <div id="scene-text"></div>
+        <div id="stats-display"></div>
+        <div id="options"></div>
+        <button id="next-btn" onclick="nextScene()">下一页</button>
+    </div>
+    <script src="sql-wasm.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
