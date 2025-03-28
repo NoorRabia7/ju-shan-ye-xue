@@ -16,8 +16,8 @@
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* 从顶部开始，而不是居中 */
-            padding-top: 20px; /* 顶部留点空间 */
+            align-items: flex-start;
+            padding-top: 20px;
         }
         #game-container {
             position: relative;
@@ -26,24 +26,40 @@
             text-shadow: 1px 1px 2px black;
             padding: 20px;
             max-width: 90%;
-            max-height: 90vh; /* 限制最大高度 */
+            max-height: 90vh;
             background-color: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
             text-align: left;
             overflow-wrap: break-word;
             word-break: break-all;
-            overflow-y: auto; /* 垂直滚动 */
-            box-sizing: border-box; /* 包含内边距 */
+            overflow-y: auto;
+            box-sizing: border-box;
         }
         #chapter-title {
             font-size: 24px;
             margin-bottom: 10px;
-            text-indent: 2em;
+            text-indent: 0; /* 取消章节标题缩进 */
         }
         #scene-text {
             font-size: 18px;
             margin-bottom: 20px;
-            text-indent: 2em;
+        }
+        #scene-text.cover {
+            text-align: center; /* 封面居中 */
+        }
+        #scene-text.cover p {
+            font-size: 36px; /* 封面字体加大 */
+            font-weight: bold; /* 封面加粗 */
+            text-align: center; /* 确保封面文字居中 */
+            margin: 0;
+            text-indent: 0; /* 取消封面缩进 */
+        }
+        #scene-text p {
+            text-indent: 2em; /* 每段首行缩进 */
+            margin: 0 0 1em 0; /* 段落间距 */
+            text-align: left; /* 章节内容左对齐 */
+            font-size: 18px; /* 正文字号 */
+            font-weight: normal; /* 正常粗细 */
         }
         #stats-display {
             font-size: 16px;
@@ -94,6 +110,12 @@
             #scene-text {
                 font-size: 16px;
             }
+            #scene-text p {
+                font-size: 16px;
+            }
+            #scene-text.cover p {
+                font-size: 28px; /* 手机上封面字体稍小 */
+            }
             #stats-display {
                 font-size: 14px;
             }
@@ -111,7 +133,7 @@
 <body>
     <div id="game-container">
         <h1 id="chapter-title"></h1>
-        <div id="scene-text"></div>
+        <div id="scene-text" class="cover"><p>雎山夜雪</p></div>
         <div id="stats-display"></div>
         <div id="options"></div>
         <button id="next-btn" onclick="nextScene()">下一页</button>

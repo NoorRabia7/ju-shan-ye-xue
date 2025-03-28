@@ -1,7 +1,9 @@
 // 全局变量
 let db;
-let currentChapter = 1;
+let currentChapter = 0; // 封面页
 let currentScene = 0;
+let isEpilogue = false; // 是否在尾声阶段
+let isCoverPage = true; // 新增：是否在封面页
 let stats = {
     "隐忍": { current: 10, max: 10, min: 10 },
     "威望": { current: 10, max: 10, min: 10 },
@@ -22,15 +24,47 @@ async function initDB() {
 
 // 开始游戏
 function startGame() {
-    loadChapter(currentChapter);
+    if (currentChapter === 0 && currentScene === 0 && !isEpilogue) {
+        document.getElementById('chapter-title').innerText = "";
+        document.getElementById('scene-text').innerHTML = "<p>雎山夜雪</p>";
+        document.getElementById('scene-text').classList.add('cover');
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('options').innerHTML = '';
+        updateStatsDisplay();
+    } else {
+        loadChapter(currentChapter);
+    }
+}
+
+
+// 下一页
+function nextScene() {
+    console.log(`nextScene: currentChapter=${currentChapter}, currentScene=${currentScene}, isEpilogue=${isEpilogue}, isCoverPage=${isCoverPage}`);
+    if (isCoverPage) {
+        // 从封面页到序章第一个场景
+        document.getElementById('scene-text').classList.remove('cover');
+        currentChapter = 0;
+        currentScene = 0;
+        isCoverPage = false; // 封面页只触发一次
+        loadChapter(currentChapter);
+    } else if (isEpilogue) {
+        // 从尾声到下一章
+        currentChapter++;
+        currentScene = 0;
+        isEpilogue = false;
+        loadChapter(currentChapter);
+    } else {
+        // 正常场景切换（包括选项触发后）
+        currentScene++;
+        loadScene(currentChapter);
+    }
 }
 
 // 加载章节
 function loadChapter(chapterId) {
     const chapter = db.exec(`SELECT * FROM Chapters WHERE chapter_id = ${chapterId}`)[0];
-    document.getElementById('chapter-title').innerText = chapter.values[0][1];
-    currentScene = 0;
-    loadScene(chapterId);
+    document.getElementById('chapter-title').innerText = chapter.values[0][1]; // chapter_name
+    loadScene(chapterId); // 加载场景
 }
 
 // 加载场景
@@ -43,8 +77,20 @@ function loadScene(chapterId) {
     if (!scenes || !scenes[0] || currentScene >= scenes[0].values.length) {
         if (chapterId < 8) {
             updateStatsAtChapterEnd();
-            currentChapter++;
-            loadChapter(currentChapter);
+            // 加载当前章节的尾声
+            const chapter = db.exec(`SELECT * FROM Chapters WHERE chapter_id = ${chapterId}`)[0];
+            const epilogueText = chapter.values[0][2];
+            if (epilogueText) {
+                const paragraphs = epilogueText.split(/\r\n|\n/).map(p => `<p>${p}</p>`).join("");
+                document.getElementById('scene-text').innerHTML = paragraphs;
+                document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('options').innerHTML = '';
+                updateStatsDisplay();
+                isEpilogue = true;
+            } else {
+                currentChapter++;
+                loadChapter(currentChapter);
+            }
         }
         return;
     }
@@ -63,7 +109,8 @@ function loadScene(chapterId) {
         });
     }
 
-    document.getElementById('scene-text').innerText = sceneText;
+    const paragraphs = sceneText.split(/\r\n|\n/).map(p => `<p>${p}</p>`).join("");
+    document.getElementById('scene-text').innerHTML = paragraphs;
     document.getElementById('next-btn').style.display = scene[5] ? 'none' : 'block';
     updateStatsDisplay();
 
@@ -71,12 +118,14 @@ function loadScene(chapterId) {
     optionsDiv.innerHTML = '';
     if (scene[5]) {
         const options = db.exec(`SELECT * FROM Options WHERE interaction_id = ${scene[5]} ORDER BY option_order`)[0];
-        options.values.forEach(option => {
-            const btn = document.createElement('button');
-            btn.innerText = option[2];
-            btn.onclick = () => handleOption(option[0]);
-            optionsDiv.appendChild(btn);
-        });
+        if (options && options.values) {
+            options.values.forEach(option => {
+                const btn = document.createElement('button');
+                btn.innerText = option[2];
+                btn.onclick = () => handleOption(option[0]);
+                optionsDiv.appendChild(btn);
+            });
+        }
     }
 }
 
@@ -124,13 +173,7 @@ function handleOption(optionId) {
     } else {
         console.log(`没有找到 option_id=${optionId} 的变化`);
     }
-    nextScene();
-}
-
-// 下一页
-function nextScene() {
-    currentScene++;
-    loadScene(currentChapter);
+    nextScene(); // 跳转到下一场景
 }
 
 // 章节结束数值更新
@@ -220,7 +263,8 @@ function showEnding() {
     } catch (e) {
         endingText = "结局加载失败，请检查数据库！";
     }
-    document.getElementById('scene-text').innerText = endingText;
+    const paragraphs = endingText.split(/\r\n|\n/).map(p => `<p>${p}</p>`).join("");
+    document.getElementById('scene-text').innerHTML = paragraphs;
     document.getElementById('options').innerHTML = '';
     document.getElementById('next-btn').style.display = 'none';
     updateStatsDisplay();
