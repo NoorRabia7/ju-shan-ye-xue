@@ -5,12 +5,12 @@ let currentScene = 0;
 let isEpilogue = false; // 是否在尾声阶段
 let isCoverPage = true; // 新增：是否在封面页
 let stats = {
-    "隐忍": { current: 10, max: 10, min: 10 },
-    "威望": { current: 10, max: 10, min: 10 },
-    "健康": { current: 10, max: 10, min: 10 },
-    "刘信好感": { current: 10, max: 10, min: 10 },
-    "徐湛好感": { current: 10, max: 10, min: 10 },
-    "春雨长乐好感": { current: 10, max: 10, min: 10 }
+    "隐忍": { current: 0, max: 5, min: -5 },
+    "威望": { current: 0, max: 5, min: -5 },
+    "健康": { current: 0, max: 5, min: -5 },
+    "刘信好感": { current: 0, max: 5, min: -5 },
+    "徐湛好感": { current: 0, max: 5, min: -5 },
+    "春雨长乐好感": { current: 0, max: 5, min: -5 }
 };
 
 // 初始化数据库
